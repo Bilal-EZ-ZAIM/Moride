@@ -9,27 +9,43 @@ import {
 import { MatchPasswordsValidator } from 'src/validation/match-passwords.validator';
 
 export class CreateDto {
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
-  @MaxLength(20)
+  @IsString({
+    message: "Le nom d'utilisateur doit être une chaîne de caractères.",
+  })
+  @IsNotEmpty({ message: "Le nom d'utilisateur est requis." })
+  @MinLength(3, {
+    message: "Le nom d'utilisateur doit contenir au moins 3 caractères.",
+  })
+  @MaxLength(20, {
+    message: "Le nom d'utilisateur ne doit pas dépasser 20 caractères.",
+  })
   username: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsEmail()
-  @MinLength(10)
-  @MaxLength(100)
+  @IsString({ message: "L'email doit être une chaîne de caractères." })
+  @IsNotEmpty({ message: "L'email est requis." })
+  @IsEmail({}, { message: 'Veuillez fournir une adresse email valide.' })
+  @MinLength(10, { message: "L'email doit contenir au moins 10 caractères." })
+  @MaxLength(100, { message: "L'email ne doit pas dépasser 100 caractères." })
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
+  @IsString({ message: 'Le mot de passe doit être une chaîne de caractères.' })
+  @IsNotEmpty({ message: 'Le mot de passe est requis.' })
+  @MinLength(8, {
+    message: 'Le mot de passe doit contenir au moins 8 caractères.',
+  })
   password: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
-  @Validate(MatchPasswordsValidator)
+  @IsString({
+    message:
+      'La confirmation du mot de passe doit être une chaîne de caractères.',
+  })
+  @IsNotEmpty({ message: 'La confirmation du mot de passe est requise.' })
+  @MinLength(8, {
+    message:
+      'La confirmation du mot de passe doit contenir au moins 8 caractères.',
+  })
+  @Validate(MatchPasswordsValidator, {
+    message: 'Les mots de passe ne correspondent pas.',
+  })
   confirmepassword: string;
 }
