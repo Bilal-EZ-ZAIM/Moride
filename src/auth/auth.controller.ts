@@ -13,6 +13,7 @@ import { log } from 'console';
 import { ValidationPipe } from 'src/validation/validation.pipe';
 import { CreateDto } from './dto/create.dto';
 import { ConfiremPasssword } from 'src/validation/confiremPassword.pipe';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,15 +29,17 @@ export class AuthController {
     const user = await this.authService.create(body);
     return {
       user,
-      message: 'User Create SucceFully',
+      message: 'Utilisateur créé avec succès. Bienvenue parmi nous !',
     };
   }
 
   @Post('/login')
-  async login(@Body() body: CreateDto) {
+  async login(@Body() body: LoginDto) {
     const user = await this.authService.login(body);
     return {
-      token: user,
+      message: 'Connexion réussie, bienvenue !',
+      token: user.token,
+      user: user.user,
     };
   }
 

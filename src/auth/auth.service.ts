@@ -27,12 +27,20 @@ export class AuthService {
     const existeEmail = await this.userModel.findOne({ email: data.email });
 
     if (existeEmail)
-      throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Un utilisateur avec cet email existe déjà. Veuillez en choisir un autre.',
+        HttpStatus.BAD_REQUEST,
+      );
 
-    const existeUsername = await this.userModel.findOne({ email: data.email });
+    const existeUsername = await this.userModel.findOne({
+      username: data.username,
+    });
 
     if (existeUsername)
-      throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        "Un utilisateur avec ce nom d'utilisateur existe déjà. Veuillez en choisir un autre.",
+        HttpStatus.BAD_REQUEST,
+      );
 
     const salt = 10;
     const hashPassword = await bcryptjs.hashSync(data.password, salt);
@@ -48,7 +56,7 @@ export class AuthService {
 
     if (!user)
       throw new HttpException(
-        'Email Or Password not Coorect',
+        'Email ou mot de passe incorrect. Veuillez vérifier vos informations.',
         HttpStatus.NOT_FOUND,
       );
 
@@ -56,14 +64,17 @@ export class AuthService {
 
     if (!checkPassword)
       throw new HttpException(
-        'Email Or Password not Coorect',
+        'Email ou mot de passe incorrect. Veuillez vérifier vos informations.',
         HttpStatus.NOT_FOUND,
       );
 
     const payload = { id: user._id };
     const token = await this.jwtService.signAsync(payload);
 
-    return token;
+    return {
+      user,
+      token,
+    };
   }
 
   async restPassword(data: any) {
