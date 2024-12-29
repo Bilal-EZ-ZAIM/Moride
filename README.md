@@ -38,7 +38,7 @@ Follow the steps below to set up and run the project locally:
 
 ```bash
 # Clone the repository
-$ git clone https://github.com/your-username/moride.git
+$ git clone https://github.com/Bilal-EZ-ZAIM/moride.git
 
 # Navigate to the project directory
 $ cd moride
