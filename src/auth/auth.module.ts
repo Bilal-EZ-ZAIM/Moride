@@ -1,23 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from './schema/user.schema';
 import { authProviders } from './auth.providers';
-import { DatabaseModule } from 'src/Database/dataBase.module';
 import { JwtModule } from '@nestjs/jwt';
+import { MailModule } from 'src/mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from './schema/user.schema';
 
 @Module({
   imports: [
-    DatabaseModule,
-    JwtModule.register({
-      global: true,
-      secret: 'bilalnaxZAim',
-      signOptions: { expiresIn: '90d' },
-    }),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    JwtModule,
+    MailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, ...authProviders],
-  exports: [],
+  providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}
