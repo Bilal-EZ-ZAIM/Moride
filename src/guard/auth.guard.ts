@@ -35,7 +35,6 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      console.log(payload);
 
       if (payload.exp && Date.now() >= payload.exp * 1000) {
         throw new UnauthorizedException('Token has expired');
@@ -46,7 +45,6 @@ export class AuthGuard implements CanActivate {
       if (!user) {
         throw new UnauthorizedException(`User with id ${payload.id} not found`);
       }
-      console.log(user);
 
       if (payload.code) {
         request['code'] = payload.code;

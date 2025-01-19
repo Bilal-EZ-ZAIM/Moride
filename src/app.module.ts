@@ -3,10 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './Database/dataBase.module';
 import { ProfileModule } from './profile/profile.module';
+import { DriverModule } from './driver/driver.module';
 
 @Module({
   imports: [
@@ -15,6 +15,7 @@ import { ProfileModule } from './profile/profile.module';
     AuthModule,
     MailModule,
     ProfileModule,
+    DriverModule,
   ],
   controllers: [AppController],
   providers: [AppService],
