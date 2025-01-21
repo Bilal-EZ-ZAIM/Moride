@@ -12,7 +12,6 @@ import { extname } from 'path';
 
 @Controller('upload')
 export class UploadController {
-
   @Post('')
   @UseInterceptors(
     FileInterceptor('image', {

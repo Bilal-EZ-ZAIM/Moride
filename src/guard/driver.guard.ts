@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
@@ -15,7 +20,12 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-  
-    return roles.some((role) => user?.role?.includes(role));
+    if (!user || !roles.some((role) => user?.role?.includes(role))) {
+      throw new ForbiddenException(
+        'Accès interdit: Vous devez être un chauffeur pour accéder à cette ressource.',
+      );
+    }
+
+    return true;
   }
 }

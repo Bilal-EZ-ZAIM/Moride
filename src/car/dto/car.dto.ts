@@ -40,10 +40,6 @@ export class CreateCarDto {
     url: string;
     key: string;
   };
-
-  @IsString()
-  @IsNotEmpty({ message: 'Le chauffeur associé est requis' })
-  driverId: string;
 }
 
 export class UpdateCarDto {
@@ -80,8 +76,4 @@ export class UpdateCarDto {
     url: string;
     key: string;
   };
-
-  @IsString()
-  @IsNotEmpty({ message: 'Le chauffeur associé est requis' })
-  driverId: string;
 }
