@@ -4,6 +4,7 @@ import {
   IsString,
   MaxLength,
   MinLength,
+  IsEnum,
   Validate,
 } from 'class-validator';
 import { MatchPasswordsValidator } from 'src/validation/match-passwords.validator';
@@ -30,8 +31,8 @@ export class CreateDto {
 
   @IsString({ message: 'Le mot de passe doit être une chaîne de caractères.' })
   @IsNotEmpty({ message: 'Le mot de passe est requis.' })
-  @MinLength(8, {
-    message: 'Le mot de passe doit contenir au moins 8 caractères.',
+  @MinLength(6, {
+    message: 'Le mot de passe doit contenir au moins 6 caractères.',
   })
   password: string;
 
@@ -40,12 +41,12 @@ export class CreateDto {
       'La confirmation du mot de passe doit être une chaîne de caractères.',
   })
   @IsNotEmpty({ message: 'La confirmation du mot de passe est requise.' })
-  @MinLength(8, {
+  @MinLength(6, {
     message:
-      'La confirmation du mot de passe doit contenir au moins 8 caractères.',
+      'La confirmation du mot de passe doit contenir au moins 6 caractères.',
   })
   @Validate(MatchPasswordsValidator, {
     message: 'Les mots de passe ne correspondent pas.',
   })
-  confirmepassword: string;
+  confirmPassword: string;
 }
