@@ -116,6 +116,39 @@ export class AuthService {
     };
   }
 
+  async loginByGoogle(data: any) {
+    console.log(data);
+
+    const utilisateurExistant = await this.userModel.findOne({
+      email: data.email,
+    });
+
+    if (utilisateurExistant) {
+      const payload = { id: utilisateurExistant._id };
+      const token = await this.generateToken(payload);
+
+      return {
+        message: 'Connexion réussie',
+        utilisateur: utilisateurExistant,
+        token,
+      };
+    }
+
+    const nouvelUtilisateur = await this.userModel.create({
+      username: data.username,
+      email: data.email,
+    });
+
+    const payload = { id: nouvelUtilisateur._id };
+    const token = await this.generateToken(payload);
+
+    return {
+      message: 'Inscription réussie et connexion effectuée',
+      utilisateur: nouvelUtilisateur,
+      token,
+    };
+  }
+
   private generateVerificationCode(): string {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
     return code;
@@ -201,4 +234,6 @@ export class AuthService {
       token: token,
     };
   }
+
+ 
 }

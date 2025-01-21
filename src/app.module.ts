@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './Database/dataBase.module';
 import { ProfileModule } from './profile/profile.module';
 import { DriverModule } from './driver/driver.module';
+import { CarModule } from './car/car.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DriverModule } from './driver/driver.module';
     MailModule,
     ProfileModule,
     DriverModule,
+    CarModule,
   ],
   controllers: [AppController],
   providers: [AppService],

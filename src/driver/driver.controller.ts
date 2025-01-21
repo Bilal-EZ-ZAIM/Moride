@@ -9,14 +9,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { DriverService } from './driver.service';
-import { AuthGuard } from 'src/guard/auth.guard';
+import { AuthGuardMoride } from 'src/guard/auth.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { RolesGuard } from 'src/guard/driver.guard';
 import { CreateDriverDto } from './dto/driver.dto';
 import { UpdateDriverDto } from './dto/updqteDriver.dto';
 
 @Controller('driver')
-@UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuardMoride, RolesGuard)
 export class DriverController {
   constructor(private readonly driverService: DriverService) {}
 

@@ -10,7 +10,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { CreateProfileDto } from './dto/profile.dto';
-import { AuthGuard } from 'src/guard/auth.guard';
+import { AuthGuardMoride } from 'src/guard/auth.guard';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/profileUpdate.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -22,7 +22,7 @@ export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Post('create')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardMoride)
   async createProfile(
     @Body() profileData: CreateProfileDto,
     @Request() req: any,
@@ -41,7 +41,7 @@ export class ProfileController {
   }
 
   @Put('update')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardMoride)
   async updateProfile(
     @Body() updateProfileData: UpdateProfileDto,
     @Request() req: any,

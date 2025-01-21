@@ -21,7 +21,6 @@ export class User {
   email: string;
 
   @Prop({
-    required: [true, 'Le mot de passe est requis'],
     minlength: [6, 'Le mot de passe doit avoir au moins 6 caractères'],
   })
   password: string;

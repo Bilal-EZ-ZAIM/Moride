@@ -7,6 +7,7 @@ import {
   Put,
   Req,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -14,9 +15,10 @@ import { ValidationPipe } from 'src/validation/validation.pipe';
 import { CreateDto } from './dto/create.dto';
 import { LoginDto } from './dto/login.dto';
 import { EmailDto } from './dto/email.dto';
-import { AuthGuard } from 'src/guard/auth.guard';
 import { CodeDto } from './dto/code.dto';
 import { UpdatePasswordDto } from './dto/updatePassword';
+import { AuthGuardMoride } from 'src/guard/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -54,7 +56,7 @@ export class AuthController {
   }
 
   @Put('/restPassword')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardMoride)
   async restPassword(@Req() req: any, @Body() body: UpdatePasswordDto) {
     console.log('hello');
 
@@ -74,7 +76,7 @@ export class AuthController {
     return token;
   }
   @Post('verify/code')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardMoride)
   async verifyCode(@Request() req: any, @Body() codeDto: CodeDto) {
     const reastPassword = this.authService.restPassword(
       req.code,
@@ -83,5 +85,36 @@ export class AuthController {
     );
 
     return reastPassword;
+  }
+
+  @Get('google/login')
+  @UseGuards(AuthGuard('google'))
+  async googleLogins() {
+    return 'hell';
+  }
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleLogin(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    console.log(user.profile.displayName);
+    console.log(user.profile.emails[0].value);
+    const username = user.profile.displayName;
+    const email = user.profile.emails[0].value;
+    const loginByGoole = await this.authService.loginByGoogle({
+      username,
+      email,
+    });
+
+    if (loginByGoole) {
+      return res.redirect(
+        `http://localhost:5173/welcome/page?token=${loginByGoole.token}`,
+      );
+    }
+  }
+
+  @Get('/islogin')
+  @UseGuards(AuthGuardMoride)
+  async getUser(@Req() req: any) {
+    return req.user;
   }
 }
