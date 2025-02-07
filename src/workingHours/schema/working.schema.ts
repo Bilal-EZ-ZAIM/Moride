@@ -2,13 +2,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, HydratedDocument } from 'mongoose';
 import { Types } from 'mongoose';
 
-export type DriverDocument = HydratedDocument<WorkingHours>;
+export type WorkingDocument = HydratedDocument<WorkingHours>;
 
 @Schema({ timestamps: true })
 export class WorkingHours extends Document {
   @Prop({
     type: Types.ObjectId,
-    ref: 'Users',
+    ref: 'User',
     required: [true, 'Le champ "driverId" est requis.'],
   })
   driverId: Types.ObjectId;

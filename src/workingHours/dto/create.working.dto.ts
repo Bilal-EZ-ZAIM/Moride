@@ -1,23 +1,35 @@
-import { IsBoolean, IsMongoId, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsMongoId,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 class DayScheduleDto {
-  @IsBoolean({ message: 'Le champ "isWorking" doit être un booléen (true ou false).' })
+  @IsBoolean({
+    message: 'Le champ "isWorking" doit être un booléen (true ou false).',
+  })
   isWorking: boolean;
 
   @IsOptional()
-  @IsString({ message: 'Le champ "startTime" doit être une chaîne de caractères.' })
+  @IsString({
+    message: 'Le champ "startTime" doit être une chaîne de caractères.',
+  })
   startTime?: string | null;
 
   @IsOptional()
-  @IsString({ message: 'Le champ "endTime" doit être une chaîne de caractères.' })
+  @IsString({
+    message: 'Le champ "endTime" doit être une chaîne de caractères.',
+  })
   endTime?: string | null;
 }
 
 export class CreateWorkingHoursDto {
-  @IsMongoId({ message: 'Le champ "driverId" doit être un identifiant MongoDB valide.' })
-  driverId: string;
-
-  @IsObject({ message: 'Le champ "weekSchedule" doit être un objet contenant les jours de la semaine.' })
+  @IsObject({
+    message:
+      'Le champ "weekSchedule" doit être un objet contenant les jours de la semaine.',
+  })
   weekSchedule: {
     Monday: DayScheduleDto;
     Tuesday: DayScheduleDto;

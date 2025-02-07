@@ -13,8 +13,8 @@ import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { AuthGuardMoride } from '../guard/auth.guard';
-import { RolesGuard } from 'src/guard/driver.guard';
-import { Roles } from 'src/roles/roles.decorator';
+import { RolesGuard } from '../guard/driver.guard';
+import { Roles } from '../roles/roles.decorator';
 import { CreateApplicationDto } from './dto/createa-pplication.dto';
 import { AcceptOfferDto } from './dto/accept-offer.dto';
 
