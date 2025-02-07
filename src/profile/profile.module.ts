@@ -5,12 +5,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Profile, ProfileSchema } from './schema/profile.schema';
 import { AuthModule } from 'src/auth/auth.module';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Profile.name, schema: ProfileSchema }]),
     JwtModule,
     AuthModule,
+    CloudinaryModule,
   ],
   controllers: [ProfileController],
   providers: [ProfileService],

@@ -1,6 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateDriverDto } from './dto/driver.dto';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Driver } from './schema/driver.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateDriverDto } from './dto/updqteDriver.dto';
@@ -82,5 +87,27 @@ export class DriverService {
       message: 'Le conducteur a été mis à jour avec succès.',
       driver: updatedDriver,
     };
+  }
+
+  async getDriver(id: string) {
+    // Convert string to ObjectId
+    const objectId = new mongoose.Types.ObjectId(id).toString();
+    console.log(objectId);
+
+    const driver = await this.driverModel.findOne({ userId: objectId });
+    console.log(driver)
+
+    if (!driver) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message:
+            "Le chauffeur avec cet identifiant n'existe pas dans notre système. Veuillez vérifier l'identifiant et réessayer.",
+          error: 'Chauffeur non trouvé',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return driver._id;
   }
 }

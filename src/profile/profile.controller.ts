@@ -8,21 +8,32 @@ import {
   UseInterceptors,
   BadRequestException,
   UploadedFile,
+  Delete,
+  Req,
+  Get,
 } from '@nestjs/common';
 import { CreateProfileDto } from './dto/profile.dto';
 import { AuthGuardMoride } from 'src/guard/auth.guard';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/profileUpdate.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Controller('profile')
+@UseGuards(AuthGuardMoride)
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly CloudinaryService: CloudinaryService,
+  ) {}
+
+  @Get('get/me')
+  async getProfile(@Req() req: any) {
+    return this.profileService.getProfile(req.user._id);
+  }
 
   @Post('create')
-  @UseGuards(AuthGuardMoride)
   async createProfile(
     @Body() profileData: CreateProfileDto,
     @Request() req: any,
@@ -41,7 +52,6 @@ export class ProfileController {
   }
 
   @Put('update')
-  @UseGuards(AuthGuardMoride)
   async updateProfile(
     @Body() updateProfileData: UpdateProfileDto,
     @Request() req: any,
@@ -59,14 +69,7 @@ export class ProfileController {
   @Post('uploadProfileImage')
   @UseInterceptors(
     FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './images',
-        filename: (req, file, cb) => {
-          const prefix = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
-          const filename = `${prefix}${extname(file.originalname)}`;
-          cb(null, filename);
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (req, file, cb) => {
         const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (allowedMimeTypes.includes(file.mimetype)) {
@@ -82,26 +85,29 @@ export class ProfileController {
       },
     }),
   )
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('File upload failed.');
+  async uploadImage(
+    @Req() req: any,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file || !file.buffer) {
+      throw new BadRequestException('No file buffer available for upload.');
     }
 
+    const url = await this.CloudinaryService.uploadFile(file);
+    console.log(url);
+
     const fileUrl = `http://localhost:3000/images/${file.filename}`;
-    return { message: 'File uploaded successfully', fileUrl };
+    const data = {
+      url: url.url,
+      key: url.public_id,
+    };
+    return this.profileService.uploadeImageProfile(req.user._id, data);
   }
 
   @Post('uploadBannerImage')
   @UseInterceptors(
     FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './images',
-        filename: (req, file, cb) => {
-          const prefix = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
-          const filename = `${prefix}${extname(file.originalname)}`;
-          cb(null, filename);
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (req, file, cb) => {
         const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (allowedMimeTypes.includes(file.mimetype)) {
@@ -117,12 +123,27 @@ export class ProfileController {
       },
     }),
   )
-  uploadPannerProfile(@UploadedFile() file: Express.Multer.File) {
+  async uploadPannerProfile(
+    @Req() req: any,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     if (!file) {
       throw new BadRequestException('File upload failed.');
     }
 
-    const fileUrl = `http://localhost:3000/images/${file.filename}`;
-    return { message: 'File uploaded successfully', fileUrl };
+    const url = await this.CloudinaryService.uploadFile(file);
+    console.log(url);
+
+    const data = {
+      url: url.url,
+      key: url.public_id,
+    };
+
+    return this.profileService.uploadeImageBannerProfile(req.user._id, data);
+  }
+
+  @Delete('deleted')
+  async deleted(@Body() body: any) {
+    return this.CloudinaryService.deleteFile(body.id);
   }
 }
