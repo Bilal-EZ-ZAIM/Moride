@@ -10,6 +10,7 @@ import { DriverModule } from './driver/driver.module';
 import { CarModule } from './car/car.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { BookingModule } from './booking/booking.module';
+import { WorkingHoursModule } from './workingHours/working.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { BookingModule } from './booking/booking.module';
     CarModule,
     CloudinaryModule,
     BookingModule,
+    WorkingHoursModule,
   ],
   controllers: [AppController],
   providers: [AppService],
