@@ -20,8 +20,7 @@ export class WorkingHoursController {
   constructor(private readonly workingHoursService: WorkingHoursService) {}
 
   @Post()
-  @UseGuards(AuthGuardMoride)
-  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuardMoride, RolesGuard)
   @Roles('driver')
   create(
     @Body() createWorkingHoursDto: CreateWorkingHoursDto,
@@ -35,18 +34,24 @@ export class WorkingHoursController {
     return this.workingHoursService.findAll();
   }
 
-  @Get(':id')
+  @Get('getone/:id')
   findOne(@Param('id') id: string) {
     return this.workingHoursService.findOne(id);
   }
 
+  @Get('/driver')
+  @UseGuards(AuthGuardMoride, RolesGuard)
+  @Roles('driver')
+  findOneByDriver(@Req() req: any) {
+    return this.workingHoursService.findOneByDriver(req.user._id);
+  }
+
   @Patch(':id')
-  @UseGuards(AuthGuardMoride)
-  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuardMoride, RolesGuard)
   @Roles('driver')
   update(
     @Param('id') id: string,
-    @Body() updateWorkingHoursDto: CreateWorkingHoursDto,
+    @Body() updateWorkingHoursDto: any,
     @Req() req: any,
   ) {
     return this.workingHoursService.update(
@@ -57,9 +62,8 @@ export class WorkingHoursController {
   }
 
   @Delete(':id')
-  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuardMoride, RolesGuard)
   @Roles('driver')
-  @UseGuards(AuthGuardMoride)
   remove(@Param('id') id: string, @Req() req: any) {
     return this.workingHoursService.remove(id, req.user._id);
   }

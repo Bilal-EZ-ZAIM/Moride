@@ -16,16 +16,10 @@ export class WorkingHoursService {
     private workingModel: Model<WorkingDocument>,
   ) {}
 
-  // Retourne un message simple
-  getHello() {
-    return 'hello working Hours';
-  }
-
-  // Créer un nouvel enregistrement de disponibilités
   async create(
     createWorkingHoursDto: CreateWorkingHoursDto,
     driverId: string,
-  ): Promise<WorkingHours> {
+  ): Promise<any> {
     const existingWorkingHours = await this.workingModel.findOne({ driverId });
 
     if (existingWorkingHours) {
@@ -38,34 +32,60 @@ export class WorkingHoursService {
       ...createWorkingHoursDto,
       driverId,
     });
-    return newWorkingHours.save();
+
+    await newWorkingHours.save();
+    return {
+      message: 'Horaire de travail créé avec succès.',
+      data: newWorkingHours,
+    };
   }
 
-  // Récupérer toutes les disponibilités
-  async findAll(): Promise<WorkingHours[]> {
-    return this.workingModel.find().populate('driverId').exec();
-  }
-
-  // Récupérer un enregistrement par ID
-  async findOne(id: string): Promise<WorkingHours> {
+  async findAll(): Promise<any> {
     const workingHours = await this.workingModel
-      .findById(id)
+      .find()
       .populate('driverId')
+      .exec();
+    return {
+      message: 'Liste des horaires de travail récupérée avec succès.',
+      data: workingHours,
+    };
+  }
+
+  async findOne(id: string): Promise<any> {
+    const workingHours = await this.workingModel.findById(id).exec();
+    if (!workingHours) {
+      throw new NotFoundException(
+        `Aucune disponibilité trouvée avec l'ID: ${id}`,
+      );
+    }
+    return {
+      message: 'Disponibilité trouvée avec succès.',
+      data: workingHours,
+    };
+  }
+
+  async findOneByDriver(id: string): Promise<any> {
+
+    console.log(id);
+    
+    const workingHours = await this.workingModel
+      .findOne({ driverId: id })
       .exec();
     if (!workingHours) {
       throw new NotFoundException(
         `Aucune disponibilité trouvée avec l'ID: ${id}`,
       );
     }
-    return workingHours;
+    return {
+      message: 'Disponibilité trouvée avec succès.',
+      data: workingHours,
+    };
   }
-
-  // Mettre à jour un enregistrement par ID
   async update(
     id: string,
     updateWorkingHoursDto: CreateWorkingHoursDto,
     driverId: string,
-  ): Promise<WorkingHours> {
+  ): Promise<any> {
     const existingWorkingHours = await this.workingModel.findById(id);
 
     if (!existingWorkingHours) {
@@ -74,7 +94,7 @@ export class WorkingHoursService {
       );
     }
 
-    if (existingWorkingHours.driverId.toString() !== driverId) {
+    if (existingWorkingHours.driverId.toString() !== driverId.toString()) {
       throw new ForbiddenException(
         "Vous n'avez pas l'autorisation de modifier cet horaire de travail.",
       );
@@ -87,31 +107,30 @@ export class WorkingHoursService {
       })
       .exec();
 
-    return updatedWorkingHours;
+    return {
+      message: 'Horaire de travail mis à jour avec succès.',
+      data: updatedWorkingHours,
+    };
   }
 
-  // Supprimer un enregistrement par ID
-  async remove(id: string , driverId): Promise<{ message: string }> {
+  async remove(id: string, driverId: string): Promise<any> {
     const existingWorkingHours = await this.workingModel.findById(id);
 
     if (!existingWorkingHours) {
       throw new NotFoundException(
-        `Impossible de mettre à jour : ID ${id} introuvable.`,
-      );
-    }
-
-    if (existingWorkingHours.driverId.toString() !== driverId) {
-      throw new ForbiddenException(
-        "Vous n'avez pas l'autorisation de modifier cet horaire de travail.",
-      );
-    }
-
-    const deleted = await this.workingModel.findByIdAndDelete(id).exec();
-    if (!deleted) {
-      throw new NotFoundException(
         `Impossible de supprimer : ID ${id} introuvable.`,
       );
     }
-    return { message: `Disponibilité supprimée avec succès.` };
+
+    if (existingWorkingHours.driverId.toString() !== driverId.toString()) {
+      throw new ForbiddenException(
+        "Vous n'avez pas l'autorisation de supprimer cet horaire de travail.",
+      );
+    }
+
+    await this.workingModel.findByIdAndDelete(id).exec();
+    return {
+      message: `Disponibilité supprimée avec succès.`,
+    };
   }
 }
