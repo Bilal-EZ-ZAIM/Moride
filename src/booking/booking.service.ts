@@ -10,7 +10,7 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 import { Booking, BookingDocument } from './schema/booking.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { DriverService } from 'src/driver/driver.service';
+import { DriverService } from '../driver/driver.service';
 import { CreateApplicationDto } from './dto/createa-pplication.dto';
 import { AcceptOfferDto } from './dto/accept-offer.dto';
 

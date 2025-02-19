@@ -11,6 +11,9 @@ import { CarModule } from './car/car.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { BookingModule } from './booking/booking.module';
 import { WorkingHoursModule } from './workingHours/working.module';
+import { ChatGateway } from './chat/chat.gateway';
+import { ChatModule } from './chat/chat.module';
+import { ChatService } from './chat/chat.service';
 
 @Module({
   imports: [
@@ -24,8 +27,9 @@ import { WorkingHoursModule } from './workingHours/working.module';
     CloudinaryModule,
     BookingModule,
     WorkingHoursModule,
+    ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway  ],
 })
 export class AppModule {}

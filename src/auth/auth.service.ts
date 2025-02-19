@@ -32,13 +32,10 @@ export class AuthService {
 
   async getAll() {
     const users = await this.userModel.findOne({
-      email: 'bilalzaim@gmail.com',
+      isOnline: true,
     });
     if (!users) {
-      throw new HttpException(
-        'User not fondjjjjjjjjjjjjjjjjjjjjjjjjjjj',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('User not fond', HttpStatus.NOT_FOUND);
     }
 
     return users;
@@ -235,5 +232,24 @@ export class AuthService {
     };
   }
 
- 
+  async updateUser(id: string, updateData: Partial<User>) {
+    try {
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        id,
+        updateData,
+        { new: true },
+      );
+
+      if (!updatedUser) {
+        console.log('User not found');
+        return null;
+      }
+
+      console.log(`🔄 User ${updatedUser.username} updated successfully.`);
+      return updatedUser;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw new Error('Failed to update user');
+    }
+  }
 }

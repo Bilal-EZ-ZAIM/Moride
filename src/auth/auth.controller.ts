@@ -24,8 +24,8 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('/user/:id')
-  findAll(@Req() req: any, @Param('id', ValidationPipe) id: number): any {
+  @Get('/user')
+  findAll(@Req() req: any): any {
     return this.authService.getAll();
   }
 

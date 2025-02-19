@@ -31,6 +31,12 @@ export class User {
     default: 'user',
   })
   role: string;
+
+  @Prop({
+    type: Boolean,
+    default: false, 
+  })
+  isOnline: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
