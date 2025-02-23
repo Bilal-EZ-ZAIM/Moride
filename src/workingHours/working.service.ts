@@ -65,9 +65,8 @@ export class WorkingHoursService {
   }
 
   async findOneByDriver(id: string): Promise<any> {
-
     console.log(id);
-    
+
     const workingHours = await this.workingModel
       .findOne({ driverId: id })
       .exec();
@@ -86,7 +85,9 @@ export class WorkingHoursService {
     updateWorkingHoursDto: CreateWorkingHoursDto,
     driverId: string,
   ): Promise<any> {
+    
     const existingWorkingHours = await this.workingModel.findById(id);
+    console.log(existingWorkingHours)
 
     if (!existingWorkingHours) {
       throw new NotFoundException(

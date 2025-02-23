@@ -26,6 +26,12 @@ export class DriverController {
     return await this.driverService.changeRoleToDriver(req.user);
   }
 
+  @Get('getDriver')
+  @UseGuards(RolesGuard)
+  async getDriver(@Request() req: any) {
+    return await this.driverService.getDriverProfile(req.user._id);
+  }
+
   @Get('change/to/')
   @UseGuards(RolesGuard)
   @Roles('driver')

@@ -7,7 +7,6 @@ export type ChatDocument = HydratedDocument<Chat>;
 export class Chat {
   @Prop({
     required: [true, 'Le nom de la room est requis'],
-    unique: true
   })
   roomName: string;
 

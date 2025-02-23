@@ -13,7 +13,7 @@ export class CreateChatDto {
 
   @IsString()
   @IsNotEmpty({ message: "Le destinataire est requis" })
-  receiver: string;
+  receiver?: string;
 
   @IsString()
   @IsNotEmpty({ message: "Le type de message est requis" })

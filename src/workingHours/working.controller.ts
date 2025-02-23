@@ -43,6 +43,7 @@ export class WorkingHoursController {
   @UseGuards(AuthGuardMoride, RolesGuard)
   @Roles('driver')
   findOneByDriver(@Req() req: any) {
+    console.log("+++++++++++++++++++")
     return this.workingHoursService.findOneByDriver(req.user._id);
   }
 
@@ -54,6 +55,7 @@ export class WorkingHoursController {
     @Body() updateWorkingHoursDto: any,
     @Req() req: any,
   ) {
+    console.log("wryxtcuvhbjnk,")
     return this.workingHoursService.update(
       id,
       updateWorkingHoursDto,

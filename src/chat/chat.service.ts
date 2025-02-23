@@ -94,7 +94,12 @@ export class ChatService {
       const savedMessage = await this.chatModel.create(message);
       console.log('Saved Message:', savedMessage);
 
-      return savedMessage;
+      const populatedMessage = await this.chatModel
+        .findById(savedMessage._id)
+        .populate('sender', 'username')
+        .populate('receiver', 'username');
+
+      return populatedMessage;
     } catch (error) {
       console.error('Error in addMessage:', error);
       throw new Error('Message saving failed.');
@@ -112,9 +117,9 @@ export class ChatService {
   async getContacts(userId: string) {
     const chats: any = await this.chatModel
       .find({ $or: [{ sender: userId }, { receiver: userId }] })
-      .populate('sender', 'username')
-      .populate('receiver', 'username')
-      .sort({ createdAt: -1 });
+      .populate('sender', 'username isOnline')
+      .populate('receiver', 'username isOnline')
+      .sort({ createdAt: -1 }); // الأحدث أولاً
 
     const uniqueContacts = new Map<string, any>();
 
@@ -122,16 +127,32 @@ export class ChatService {
       const participants = [chat.sender, chat.receiver];
 
       participants.forEach((participant) => {
-        if (participant._id != userId && !uniqueContacts.has(participant._id)) {
-          uniqueContacts.set(participant._id, {
-            roomName: chat.roomName,
-            username: participant.username,
-            _id: participant._id,
-            lastMessage: {
-              content: chat.content,
-              time: chat.createdAt,
-            },
-          });
+        const participantId = participant._id.toString();
+
+        if (participantId !== userId) {
+          // التحقق مما إذا كان المستخدم قد أضيف من قبل
+          if (!uniqueContacts.has(participantId)) {
+            uniqueContacts.set(participantId, {
+              roomName: chat.roomName || `${userId}-${participantId}`, // توليد اسم الغرفة إذا لم يكن موجودًا
+              username: participant.username,
+              isOnline: participant.isOnline,
+              _id: participant._id,
+              lastMessage: {
+                content: chat.content,
+                time: chat.createdAt,
+              },
+            });
+          } else {
+            // تحديث آخر رسالة إذا كان هناك رسالة أحدث
+            const existingContact = uniqueContacts.get(participantId);
+            if (chat.createdAt > existingContact.lastMessage.time) {
+              existingContact.lastMessage = {
+                content: chat.content,
+                time: chat.createdAt,
+              };
+              uniqueContacts.set(participantId, existingContact);
+            }
+          }
         }
       });
     });
@@ -140,16 +161,15 @@ export class ChatService {
   }
 
   async getMessages(roomName: string, page: number = 1) {
-    const limit = 50; 
+    const limit = 50;
     const skip = (page - 1) * limit;
 
     const chats: any = await this.chatModel
       .find({ roomName: roomName })
       .populate('sender', 'username')
       .populate('receiver', 'username')
-      .sort({ createdAt: -1 }) 
-      .skip(skip) 
-      .limit(limit); 
+      .skip(skip)
+      .limit(limit);
 
     return chats;
   }

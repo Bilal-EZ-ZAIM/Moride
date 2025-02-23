@@ -31,12 +31,12 @@ export class CreateWorkingHoursDto {
       'Le champ "weekSchedule" doit être un objet contenant les jours de la semaine.',
   })
   weekSchedule: {
-    Monday: DayScheduleDto;
-    Tuesday: DayScheduleDto;
-    Wednesday: DayScheduleDto;
-    Thursday: DayScheduleDto;
-    Friday: DayScheduleDto;
-    Saturday: DayScheduleDto;
-    Sunday: DayScheduleDto;
+    monday: DayScheduleDto;
+    tuesday: DayScheduleDto;
+    wednesday: DayScheduleDto;
+    thursday: DayScheduleDto;
+    friday: DayScheduleDto;
+    saturday: DayScheduleDto;
+    sunday: DayScheduleDto;
   };
 }

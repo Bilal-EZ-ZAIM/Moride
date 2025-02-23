@@ -16,47 +16,47 @@ export class WorkingHours extends Document {
   @Prop({
     type: Object,
     default: {
-      Monday: { isWorking: false, startTime: null, endTime: null },
-      Tuesday: { isWorking: false, startTime: null, endTime: null },
-      Wednesday: { isWorking: false, startTime: null, endTime: null },
-      Thursday: { isWorking: false, startTime: null, endTime: null },
-      Friday: { isWorking: false, startTime: null, endTime: null },
-      Saturday: { isWorking: false, startTime: null, endTime: null },
-      Sunday: { isWorking: false, startTime: null, endTime: null },
+      monday: { isWorking: false, startTime: null, endTime: null },
+      tuesday: { isWorking: false, startTime: null, endTime: null },
+      wednesday: { isWorking: false, startTime: null, endTime: null },
+      thursday: { isWorking: false, startTime: null, endTime: null },
+      friday: { isWorking: false, startTime: null, endTime: null },
+      saturday: { isWorking: false, startTime: null, endTime: null },
+      sunday: { isWorking: false, startTime: null, endTime: null },
     },
   })
   weekSchedule: {
-    Monday: {
+    monday: {
       isWorking: boolean;
       startTime: string | null;
       endTime: string | null;
     };
-    Tuesday: {
+    tuesday: {
       isWorking: boolean;
       startTime: string | null;
       endTime: string | null;
     };
-    Wednesday: {
+    wednesday: {
       isWorking: boolean;
       startTime: string | null;
       endTime: string | null;
     };
-    Thursday: {
+    thursday: {
       isWorking: boolean;
       startTime: string | null;
       endTime: string | null;
     };
-    Friday: {
+    friday: {
       isWorking: boolean;
       startTime: string | null;
       endTime: string | null;
     };
-    Saturday: {
+    saturday: {
       isWorking: boolean;
       startTime: string | null;
       endTime: string | null;
     };
-    Sunday: {
+    sunday: {
       isWorking: boolean;
       startTime: string | null;
       endTime: string | null;

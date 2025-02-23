@@ -44,6 +44,10 @@ export class ProfileService {
         userId,
       };
 
+      console.log("******************")
+      console.log(data)
+      console.log("******************")
+
       return await this.profileModel.create(data);
     } catch (error) {
       if (error && error.code === 11000) {

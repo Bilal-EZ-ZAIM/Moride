@@ -38,6 +38,7 @@ export class ProfileController {
     @Body() profileData: CreateProfileDto,
     @Request() req: any,
   ) {
+    console.log(profileData)
     const user = req.user;
 
     const profile = await this.profileService.createProfile(
