@@ -109,7 +109,6 @@ export class Profile {
         /^(https?:\/\/)?([\w\-]+)+[\w\-\._~:/?#[\]@!$&'()*+,;=.]+$/.test(url),
       message: 'URL de Facebook invalide.',
     },
-    default: '',
     unique: true,
     sparse: true,
   })
@@ -123,7 +122,6 @@ export class Profile {
         /^(https?:\/\/)?([\w\-]+)+[\w\-\._~:/?#[\]@!$&'()*+,;=.]+$/.test(url),
       message: 'URL de LinkedIn invalide.',
     },
-    default: '',
     unique: true,
     sparse: true,
   })
@@ -137,7 +135,6 @@ export class Profile {
         /^(https?:\/\/)?([\w\-]+)+[\w\-\._~:/?#[\]@!$&'()*+,;=.]+$/.test(url),
       message: 'URL de WhatsApp invalide.',
     },
-    default: '',
     unique: true,
     sparse: true,
   })
@@ -151,7 +148,6 @@ export class Profile {
         /^(https?:\/\/)?([\w\-]+)+[\w\-\._~:/?#[\]@!$&'()*+,;=.]+$/.test(url),
       message: 'URL de Portfolio invalide.',
     },
-    default: '',
     unique: true,
     sparse: true,
   })

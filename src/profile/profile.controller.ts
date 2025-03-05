@@ -13,12 +13,12 @@ import {
   Get,
 } from '@nestjs/common';
 import { CreateProfileDto } from './dto/profile.dto';
-import { AuthGuardMoride } from 'src/guard/auth.guard';
+import { AuthGuardMoride } from '../guard/auth.guard';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/profileUpdate.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Controller('profile')
 @UseGuards(AuthGuardMoride)
@@ -27,6 +27,11 @@ export class ProfileController {
     private readonly profileService: ProfileService,
     private readonly CloudinaryService: CloudinaryService,
   ) {}
+
+  @Get('getProfiles')
+  async getProfiles() {
+    return await this.profileService.updateAllUsersWithProfileIds();
+  }
 
   @Get('get/me')
   async getProfile(@Req() req: any) {
@@ -38,7 +43,7 @@ export class ProfileController {
     @Body() profileData: CreateProfileDto,
     @Request() req: any,
   ) {
-    console.log(profileData)
+    console.log(profileData);
     const user = req.user;
 
     const profile = await this.profileService.createProfile(
@@ -97,7 +102,6 @@ export class ProfileController {
     const url = await this.CloudinaryService.uploadFile(file);
     console.log(url);
 
-    const fileUrl = `http://localhost:3000/images/${file.filename}`;
     const data = {
       url: url.url,
       key: url.public_id,

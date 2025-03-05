@@ -11,13 +11,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ValidationPipe } from 'src/validation/validation.pipe';
 import { CreateDto } from './dto/create.dto';
 import { LoginDto } from './dto/login.dto';
 import { EmailDto } from './dto/email.dto';
 import { CodeDto } from './dto/code.dto';
 import { UpdatePasswordDto } from './dto/updatePassword';
-import { AuthGuardMoride } from 'src/guard/auth.guard';
+import { AuthGuardMoride } from '../guard/auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')

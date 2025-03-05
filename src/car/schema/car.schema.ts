@@ -27,7 +27,7 @@ export class Car {
   @Prop({ required: true })
   @IsNumber()
   @IsNotEmpty({ message: "L'année de fabrication ne peut pas être vide" })
-  year: number;
+  year: string;
 
   @Prop({ required: true })
   @IsString()

@@ -43,8 +43,13 @@ export class WorkingHoursController {
   @UseGuards(AuthGuardMoride, RolesGuard)
   @Roles('driver')
   findOneByDriver(@Req() req: any) {
-    console.log("+++++++++++++++++++")
+    console.log('+++++++++++++++++++');
     return this.workingHoursService.findOneByDriver(req.user._id);
+  }
+
+  @Get('/driver/work-schedule/:id')
+  getDriverWorkSchedule(@Param('id') id: string) {
+    return this.workingHoursService.getDriverWorkSchedule(id);
   }
 
   @Patch(':id')
@@ -55,7 +60,7 @@ export class WorkingHoursController {
     @Body() updateWorkingHoursDto: any,
     @Req() req: any,
   ) {
-    console.log("wryxtcuvhbjnk,")
+    console.log('wryxtcuvhbjnk,');
     return this.workingHoursService.update(
       id,
       updateWorkingHoursDto,

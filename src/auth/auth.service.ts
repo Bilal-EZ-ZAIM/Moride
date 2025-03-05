@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import * as bcryptjs from 'bcryptjs';
 import { CreateDto } from './dto/create.dto';
 import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { CodeDto } from './dto/code.dto';
 import { ConfigService } from '@nestjs/config';
 import { UpdatePasswordDto } from './dto/updatePassword';
@@ -18,6 +18,14 @@ export class AuthService {
     private mail: MailService,
     private readonly configService: ConfigService,
   ) {}
+
+  async updateIdProfile(id: string, idProfile: string): Promise<User> {
+    return this.userModel.findByIdAndUpdate(
+      id,
+      { profileId: idProfile },
+      { new: true },
+    );
+  }
 
   generateToken(payload: any, expiresIn: string = '90d'): string {
     return this.jwtService.sign(payload, {

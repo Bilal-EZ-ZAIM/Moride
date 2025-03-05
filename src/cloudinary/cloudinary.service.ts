@@ -7,8 +7,6 @@ import { diskStorage, memoryStorage } from 'multer'; // Import memoryStorage for
 @Injectable()
 export class CloudinaryService {
   async uploadFile(file: Express.Multer.File): Promise<CloudinaryResponse> {
-    console.log('==========================================================');
-    console.log(file);
 
     return new Promise<CloudinaryResponse>((resolve, reject) => {
       if (!file || !file.buffer) {

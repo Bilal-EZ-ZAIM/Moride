@@ -30,6 +30,8 @@ export class CreateBookingDto {
   @IsNotEmpty({ message: "L'heure du trajet est requise." })
   time: string;
 
+  
+
   @IsNumber()
   @Min(1, { message: 'Il doit y avoir au moins un passager.' })
   @Max(4, { message: 'Le nombre maximum de passagers est de 4.' })
@@ -44,16 +46,20 @@ export class CreateBookingDto {
   @IsString()
   notes?: string;
 
+  @IsOptional()
+  @IsString()
+  profileId?: string;
+
   // Champs prix requis
-  @IsNumber()
+  @IsString()
   @IsPositive({ message: 'Le prix de départ doit être un nombre positif.' })
   @IsNotEmpty({ message: 'Le prix de départ est requis.' })
-  priceFrom: number;
+  priceFrom: string;
 
   @IsNumber()
   @IsPositive({
     message: 'Le prix de destination doit être un nombre positif.',
   })
   @IsNotEmpty({ message: 'Le prix de destination est requis.' })
-  priceTo: number;
+  priceTo: string;
 }

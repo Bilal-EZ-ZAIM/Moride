@@ -27,10 +27,15 @@ export class BookingController {
     return this.bookingService.findAll();
   }
 
-  @Post()
+  @Post('')
   @UseGuards(AuthGuardMoride)
-  create(@Body() createBookingDto: CreateBookingDto, @Req() req: any) {
-    return this.bookingService.create(createBookingDto, req.user._id);
+  create(@Body() createBookingDto: any, @Req() req: any) {
+    console.log(createBookingDto);
+    return this.bookingService.create(
+      createBookingDto,
+      req.user._id,
+      req.user.profileId,
+    );
   }
 
   @Get('my-booking')
@@ -41,6 +46,7 @@ export class BookingController {
 
   @Get('/:id')
   findOne(@Param('id') id: string) {
+    console.log(id);
     return this.bookingService.findOne(id);
   }
 
@@ -68,6 +74,7 @@ export class BookingController {
     @Req() req: any,
     @Body() createApplicationDto: CreateApplicationDto,
   ) {
+    console.log(id);
     return this.bookingService.applyForBooking(
       id,
       req.user._id,

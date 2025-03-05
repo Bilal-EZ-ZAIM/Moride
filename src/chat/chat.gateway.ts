@@ -72,7 +72,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.senderId,
         data.receiver,
       );
-      
+
       client.join(roomName);
       console.log(`User joined room: ${roomName}`);
     } else {
@@ -94,11 +94,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     data.roomName = roomName;
 
     const newMsg = await this.chatService.addMessage(data);
-    console.log(newMsg)
+    console.log(newMsg);
 
-    this.server
-      .to(roomName)
-      .emit('receive_message', { newMsg });
+    this.server.to(roomName).emit('receive_message', { newMsg });
   }
 
   // Get contacts of the current user

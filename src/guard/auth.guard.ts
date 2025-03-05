@@ -30,11 +30,6 @@ export class AuthGuardMoride implements CanActivate {
     if (!token) {
       throw new UnauthorizedException('Invalid token format');
     }
-    console.log("==============")
-
-    console.log(token)
-    console.log("==============")
-
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
@@ -56,7 +51,6 @@ export class AuthGuardMoride implements CanActivate {
 
       request['user'] = user;
     } catch (error) {
-      console.error('JWT verification failed:', error);
       throw new UnauthorizedException(error.message || 'Unauthorized');
     }
 

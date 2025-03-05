@@ -8,14 +8,31 @@ import { Profile } from './schema/profile.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UpdateProfileDto } from './dto/profileUpdate.dto';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectModel(Profile.name) private readonly profileModel: Model<Profile>,
     private readonly CloudinaryService: CloudinaryService,
+    private readonly userService: AuthService,
   ) {}
+
+  async updateAllUsersWithProfileIds() {
+    const profiles = await this.profileModel.find();
+
+    for (const profile of profiles) {
+      await this.userService.updateIdProfile(
+        profile.userId.toString(),
+        profile._id.toString(),
+      );
+    }
+
+    console.log(
+      '✅ Tous les utilisateurs ont été mis à jour avec leur profileId avec succès !',
+    );
+  }
 
   async getProfile(id: string) {
     const profile = await this.profileModel.findOne({ userId: id });
@@ -44,11 +61,13 @@ export class ProfileService {
         userId,
       };
 
-      console.log("******************")
-      console.log(data)
-      console.log("******************")
+      console.log('******************');
+      console.log(data);
+      console.log('******************');
 
-      return await this.profileModel.create(data);
+      const newprofile: any = await this.profileModel.create(data);
+      await this.userService.updateIdProfile(userId, newprofile?._id);
+      return newprofile;
     } catch (error) {
       if (error && error.code === 11000) {
         console.log('Duplicate key value:', error.errorResponse.keyValue);

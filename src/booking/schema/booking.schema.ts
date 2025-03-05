@@ -26,8 +26,17 @@ export class Booking {
   @Prop({ type: String })
   notes?: string;
 
-  @Prop({ required: true, type: String })
-  userId: string;
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  userId: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Profile', required: false })
+  profileId: Types.ObjectId;
+
+  @Prop({ required: true })
+  priceFrom: string;
+
+  @Prop({ required: true })
+  priceTo: string;
 
   @Prop({
     type: [
@@ -37,6 +46,12 @@ export class Booking {
         date: { type: String, required: true },
         time: { type: String, required: true },
         price: { type: Number, required: true },
+        status: {
+          type: String,
+          enum: ['pending', 'accepted', 'rejected'],
+          default: 'pending',
+          required: true,
+        },
       },
     ],
     default: [],

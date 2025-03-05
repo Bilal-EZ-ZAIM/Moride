@@ -16,6 +16,12 @@ export class DriverService {
     @InjectModel(Driver.name) private readonly driverModel: Model<Driver>,
   ) {}
 
+  async getAllDrivers() {
+    return await this.driverModel
+      .find()
+      .populate('profile', 'imageProfile lastname firstname imageBanner');
+  }
+
   async changeRoleToDriver(user: any) {
     user.role = 'driver';
 
@@ -95,7 +101,7 @@ export class DriverService {
     console.log(objectId);
 
     const driver = await this.driverModel.findOne({ userId: objectId });
-    console.log(driver)
+    console.log(driver);
 
     if (!driver) {
       throw new HttpException(
@@ -116,8 +122,32 @@ export class DriverService {
     const objectId = new mongoose.Types.ObjectId(id).toString();
     console.log(objectId);
 
-    const driver = (await this.driverModel.findOne({ userId: objectId })).populate('profile');;
-    console.log(driver)
+    const driver = (
+      await this.driverModel.findOne({ userId: objectId })
+    ).populate('profile');
+    console.log(driver);
+
+    if (!driver) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message:
+            "Le chauffeur avec cet identifiant n'existe pas dans notre système. Veuillez vérifier l'identifiant et réessayer.",
+          error: 'Chauffeur non trouvé',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return driver;
+  }
+
+  async getDriverById(id: string) {
+    // Convert string to ObjectId
+    const objectId = new mongoose.Types.ObjectId(id).toString();
+    console.log(objectId);
+
+    const driver = (await this.driverModel.findById(id)).populate('profile');
+    console.log(driver);
 
     if (!driver) {
       throw new HttpException(

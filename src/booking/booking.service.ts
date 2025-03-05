@@ -23,7 +23,11 @@ export class BookingService {
   ) {}
 
   // Création d'une réservation
-  async create(createBookingDto: CreateBookingDto, userId: string) {
+  async create(
+    createBookingDto: CreateBookingDto,
+    userId: string,
+    profileId: string,
+  ) {
     try {
       // Vérification du nombre de passagers
       if (createBookingDto.passengers < 1 || createBookingDto.passengers > 4) {
@@ -36,6 +40,7 @@ export class BookingService {
       const booking = new this.bookingModel({
         ...createBookingDto,
         userId: userId,
+        profileId: profileId,
       });
 
       // Sauvegarde de la réservation dans la base de données
@@ -55,17 +60,38 @@ export class BookingService {
 
   // Récupérer toutes les réservations
   async findAll() {
-    return await this.bookingModel.find().populate('applicants').exec();
+    return await this.bookingModel
+      .find()
+      .populate('profileId', 'firstname lastname imageProfile')
+      .exec();
   }
 
   async findMyBooking(id: string) {
-    console.log('test', id);
-
-    return await this.bookingModel.find({ userId: id }).exec();
+    return await this.bookingModel
+      .find({ userId: id })
+      .populate({
+        path: 'applicants.driverId',
+        select: 'ratings rating',
+        populate: {
+          path: 'profile',
+          model: 'Profile',
+          select: 'imageProfile firstname lastname',
+        },
+      })
+      .exec();
   }
 
   // Récupérer une réservation par ID
   async findOne(id: string) {
+    const booking = await this.bookingModel.findById(id).exec();
+
+    if (!booking) {
+      throw new BadRequestException('Aucune réservation trouvée.');
+    }
+    return booking;
+  }
+
+  async findOneByOwner(id: string) {
     const booking = await this.bookingModel
       .findById(id)
       .populate({
@@ -87,7 +113,7 @@ export class BookingService {
 
   // Mettre à jour une réservation
   async update(id: string, updateBookingDto: UpdateBookingDto, userId: string) {
-    const booking = await this.bookingModel.findById(id).exec();
+    const booking: any = await this.bookingModel.findById(id).exec();
     if (!booking) {
       throw new BadRequestException(
         'Aucune réservation trouvée pour la mise à jour.',
@@ -115,7 +141,7 @@ export class BookingService {
 
   // Supprimer une réservation
   async remove(id: string, userId: string) {
-    const booking = await this.bookingModel.findById(id).exec();
+    const booking: any = await this.bookingModel.findById(id).exec();
     if (!booking) {
       throw new BadRequestException('Aucune réservation trouvée à supprimer.');
     }
@@ -175,10 +201,12 @@ export class BookingService {
 
   async acceptOffer(bookingId: string, data: AcceptOfferDto, userId: string) {
     const booking = await this.bookingModel.findById(bookingId);
+
     if (!booking) {
       throw new NotFoundException('Aucune réservation trouvée.');
     }
 
+    console.log(booking);
     console.log(booking.userId);
     console.log(userId);
 
@@ -188,11 +216,10 @@ export class BookingService {
       );
     }
 
-    
-
     const offer = booking.applicants.find(
       (applicant) => applicant.driverId.toString() === data.driverId,
     );
+
     if (!offer) {
       throw new BadRequestException('Aucune offre trouvée de ce chauffeur.');
     }
@@ -201,11 +228,20 @@ export class BookingService {
       throw new BadRequestException('Un chauffeur a déjà été sélectionné.');
     }
 
+    // Set the selected driver and update the status of the applicant to 'accepted'
     booking.selectedDriver = {
       driverId: offer.driverId,
       confirmation: true,
     };
-    booking.finalPrice = data.price;
+
+    // Update the status of all applicants to 'accepted' for the selected driver
+    booking.applicants.forEach((applicant: any) => {
+      if (applicant.driverId.toString() === offer.driverId.toString()) {
+        applicant.status = 'accepted'; // Set the status to 'accepted' for the chosen driver
+      } else {
+        applicant.status = 'rejected'; // Optionally, reject other applicants
+      }
+    });
 
     await booking.save();
 

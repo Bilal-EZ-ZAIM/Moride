@@ -14,6 +14,7 @@ import { WorkingHoursModule } from './workingHours/working.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 import { ChatService } from './chat/chat.service';
+import { PricingModule } from './Pricing/pricing.module';
 
 @Module({
   imports: [
@@ -28,8 +29,9 @@ import { ChatService } from './chat/chat.service';
     BookingModule,
     WorkingHoursModule,
     ChatModule,
+    PricingModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway  ],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}

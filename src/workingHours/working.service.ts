@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { WorkingDocument, WorkingHours } from './schema/working.schema';
 import { CreateWorkingHoursDto } from './dto/create.working.dto';
 
@@ -80,14 +80,32 @@ export class WorkingHoursService {
       data: workingHours,
     };
   }
+
+  async getDriverWorkSchedule(id: string): Promise<any> {
+    const objectId = new Types.ObjectId(id);
+
+    const workingHours = await this.workingModel
+      .findOne({ driverId: objectId })
+      .exec();
+
+    if (!workingHours) {
+      throw new NotFoundException(
+        `Aucune disponibilité trouvée avec l'ID: ${id}`,
+      );
+    }
+
+    return {
+      message: 'Disponibilité trouvée avec succès.',
+      data: workingHours,
+    };
+  }
   async update(
     id: string,
     updateWorkingHoursDto: CreateWorkingHoursDto,
     driverId: string,
   ): Promise<any> {
-    
     const existingWorkingHours = await this.workingModel.findById(id);
-    console.log(existingWorkingHours)
+    console.log(existingWorkingHours);
 
     if (!existingWorkingHours) {
       throw new NotFoundException(
