@@ -37,6 +37,7 @@ export class PricingController {
 
   @Get(':id')
   async getPricing(@Param('id') id: string) {
+    console.log(id);
     return this.PricingService.getPricingById(id);
   }
 
