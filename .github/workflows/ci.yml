@@ -25,9 +25,14 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      # Vérification des paquets installés (optionnel)
+      - name: Check installed packages
+        run: npm list --depth=0
+
       # Exécution des tests
       - name: Run Tests
-        run: npm run test
+        run: |
+          npm run test || { echo 'Tests failed'; exit 1; }
 
       # Connexion à Docker Hub
       - name: Login to Docker Hub
