@@ -4,7 +4,6 @@ import {
   IsString,
   MaxLength,
   MinLength,
-  IsEnum,
   Validate,
 } from 'class-validator';
 import { MatchPasswordsValidator } from '../../validation/match-passwords.validator';
