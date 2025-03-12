@@ -92,6 +92,7 @@ export class ProfileService {
 
   async updateProfile(updateData: UpdateProfileDto, userId: string) {
     try {
+      console.log(updateData)
       const existingProfile = await this.profileModel.findOne({ userId });
 
       if (!existingProfile) {

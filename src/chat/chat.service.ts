@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { AuthService } from '../auth/auth.service';
 import * as jwt from 'jsonwebtoken';
@@ -115,46 +115,80 @@ export class ChatService {
   }
 
   async getContacts(userId: string) {
-    const chats: any = await this.chatModel
-      .find({ $or: [{ sender: userId }, { receiver: userId }] })
-      .populate('sender', 'username isOnline')
-      .populate('receiver', 'username isOnline')
-      .sort({ createdAt: -1 }); // الأحدث أولاً
+    const objectId = new mongoose.Types.ObjectId(userId);
 
-    const uniqueContacts = new Map<string, any>();
+    const chats: any = await this.chatModel
+      .find({ $or: [{ sender: objectId }, { receiver: objectId }] })
+      .populate({
+        path: 'sender',
+        select: 'username isOnline profileId',
+        populate: {
+          path: 'profileId',
+          select: 'imageProfile',
+        },
+      })
+      .populate({
+        path: 'receiver',
+        select: 'username isOnline profileId',
+        populate: {
+          path: 'profileId',
+          select: 'imageProfile',
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    console.log('Populated chats:', JSON.stringify(chats, null, 2));
+
+    const uniqueContacts = new Map();
 
     chats.forEach((chat) => {
-      const participants = [chat.sender, chat.receiver];
+      let otherParticipant = null;
 
-      participants.forEach((participant) => {
-        const participantId = participant._id.toString();
+      if (
+        chat.sender &&
+        chat.sender._id &&
+        chat.sender._id.toString() === objectId.toString()
+      ) {
+        otherParticipant = chat.receiver;
+      } else if (
+        chat.receiver &&
+        chat.receiver._id &&
+        chat.receiver._id.toString() === objectId.toString()
+      ) {
+        otherParticipant = chat.sender;
+      }
 
-        if (participantId !== userId) {
-          // التحقق مما إذا كان المستخدم قد أضيف من قبل
-          if (!uniqueContacts.has(participantId)) {
-            uniqueContacts.set(participantId, {
-              roomName: chat.roomName || `${userId}-${participantId}`, // توليد اسم الغرفة إذا لم يكن موجودًا
-              username: participant.username,
-              isOnline: participant.isOnline,
-              _id: participant._id,
-              lastMessage: {
-                content: chat.content,
-                time: chat.createdAt,
-              },
-            });
-          } else {
-            // تحديث آخر رسالة إذا كان هناك رسالة أحدث
-            const existingContact = uniqueContacts.get(participantId);
-            if (chat.createdAt > existingContact.lastMessage.time) {
-              existingContact.lastMessage = {
-                content: chat.content,
-                time: chat.createdAt,
-              };
-              uniqueContacts.set(participantId, existingContact);
-            }
-          }
+      if (!otherParticipant || !otherParticipant._id) {
+        console.log('Skipping chat due to invalid participant:', chat._id);
+        return;
+      }
+
+      const participantId = otherParticipant._id.toString();
+
+      if (!uniqueContacts.has(participantId)) {
+        uniqueContacts.set(participantId, {
+          roomName: chat.roomName || `${objectId}-${participantId}`,
+          username: otherParticipant.username,
+          isOnline: otherParticipant.isOnline,
+          _id: participantId,
+          imageProfile:
+            otherParticipant.profileId?.imageProfile?.url ||
+            'https://res.cloudinary.com/dsldmzxqt/image/upload/v1737556717/profile_tfo9f4.png',
+          lastMessage: {
+            content: chat.content,
+            time: chat.createdAt,
+          },
+        });
+      } else {
+        const existingContact = uniqueContacts.get(participantId);
+        if (chat.createdAt > existingContact.lastMessage.time) {
+          existingContact.lastMessage = {
+            content: chat.content,
+            time: chat.createdAt,
+          };
+          uniqueContacts.set(participantId, existingContact);
         }
-      });
+      }
     });
 
     return Array.from(uniqueContacts.values());

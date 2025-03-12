@@ -46,20 +46,21 @@ export class PricingService {
   // Lire une tarification (Read)
   async getPricingById(userId: string): Promise<Pricing> {
     if (!Types.ObjectId.isValid(userId)) {
-      throw new BadRequestException("L'ID utilisateur fourni est invalide.");
-    }
-
-    const pricing = await this.PricingModel.findOne({ userId });
-
-    if (!pricing) {
-      throw new NotFoundException(
-        "La tarification demandée n'a pas été trouvée ou vous n'avez pas les droits pour y accéder.",
+      throw new BadRequestException(
+        "L'ID de tarification fourni est invalide.",
       );
     }
-
+    const pricing = await this.PricingModel.findOne({
+      userId: new Types.ObjectId(userId),
+    });
+    if (!pricing) {
+      throw new NotFoundException(
+        "La tarification demandée n'a pas été trouvée ou vous n'avez pas les droits pour y accéder",
+      );
+    }
+    console.log(pricing);
     return pricing;
   }
-
   // Mettre à jour une tarification (Update)
   async updatePricing(
     pricingId: string,

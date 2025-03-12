@@ -98,10 +98,8 @@ export class DriverService {
   async getDriver(id: string) {
     // Convert string to ObjectId
     const objectId = new mongoose.Types.ObjectId(id).toString();
-    console.log(objectId);
 
     const driver = await this.driverModel.findOne({ userId: objectId });
-    console.log(driver);
 
     if (!driver) {
       throw new HttpException(
@@ -120,12 +118,10 @@ export class DriverService {
   async getDriverProfile(id: string) {
     // Convert string to ObjectId
     const objectId = new mongoose.Types.ObjectId(id).toString();
-    console.log(objectId);
 
     const driver = (
       await this.driverModel.findOne({ userId: objectId })
     ).populate('profile');
-    console.log(driver);
 
     if (!driver) {
       throw new HttpException(
@@ -144,10 +140,8 @@ export class DriverService {
   async getDriverById(id: string) {
     // Convert string to ObjectId
     const objectId = new mongoose.Types.ObjectId(id).toString();
-    console.log(objectId);
 
     const driver = (await this.driverModel.findById(id)).populate('profile');
-    console.log(driver);
 
     if (!driver) {
       throw new HttpException(

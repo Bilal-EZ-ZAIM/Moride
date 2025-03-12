@@ -122,7 +122,6 @@ export class AuthService {
   }
 
   async loginByGoogle(data: any) {
-    console.log(data);
 
     const utilisateurExistant = await this.userModel.findOne({
       email: data.email,
@@ -161,10 +160,8 @@ export class AuthService {
 
   async sendCodeByEmail(email: string) {
     const user = await this.userModel.findOne({ email: email });
-    console.log('Utilisateur trouvé :', user);
 
     if (!user) {
-      console.log('Utilisateur introuvable pour l’email :', email);
       throw new HttpException(
         {
           message:
@@ -175,7 +172,6 @@ export class AuthService {
     }
 
     const code = this.generateVerificationCode();
-    console.log('Code généré :', code);
 
     await this.mail.sendEmail({ to: email, code });
 
@@ -189,7 +185,6 @@ export class AuthService {
   }
 
   async updatePassword(user: any, data: UpdatePasswordDto) {
-    console.log(data);
 
     if (!user) {
       throw new HttpException('Email not correct', HttpStatus.NOT_FOUND);
@@ -249,14 +244,11 @@ export class AuthService {
       );
 
       if (!updatedUser) {
-        console.log('User not found');
         return null;
       }
 
-      console.log(`🔄 User ${updatedUser.username} updated successfully.`);
       return updatedUser;
     } catch (error) {
-      console.error('Error updating user:', error);
       throw new Error('Failed to update user');
     }
   }

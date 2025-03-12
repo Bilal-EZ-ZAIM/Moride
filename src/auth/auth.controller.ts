@@ -57,7 +57,6 @@ export class AuthController {
   @Put('/restPassword')
   @UseGuards(AuthGuardMoride)
   async restPassword(@Req() req: any, @Body() body: UpdatePasswordDto) {
-    console.log('hello');
 
     const user = await this.authService.updatePassword(req.user, body);
     return {
@@ -74,6 +73,7 @@ export class AuthController {
 
     return token;
   }
+
   @Post('verify/code')
   @UseGuards(AuthGuardMoride)
   async verifyCode(@Request() req: any, @Body() codeDto: CodeDto) {

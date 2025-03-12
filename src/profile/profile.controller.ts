@@ -62,6 +62,7 @@ export class ProfileController {
     @Body() updateProfileData: UpdateProfileDto,
     @Request() req: any,
   ) {
+    console.log(updateProfileData)
     const userId = req.user._id;
 
     const result = await this.profileService.updateProfile(
