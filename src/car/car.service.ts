@@ -7,17 +7,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Car, CarDocument } from './schema/car.schema';
 import { CreateCarDto, UpdateCarDto } from './dto/car.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class CarService {
   constructor(
     @InjectModel(Car.name) private readonly carModel: Model<CarDocument>,
+    private readonly CloudinaryService: CloudinaryService,
   ) {}
 
   /**
    * Créer une nouvelle voiture.
    */
-  async create(createCarDto: CreateCarDto, driverId: string): Promise<Car> {
+  async create(createCarDto: any, driverId: string): Promise<Car> {
     const existingDriver = await this.carModel.findOne({ driverId }).exec();
     if (existingDriver) {
       throw new BadRequestException(
@@ -46,11 +48,23 @@ export class CarService {
     return await this.carModel.find().exec();
   }
 
+  async findCarByDriver(driverId: string){
+    return await this.carModel.findOne({ driverId: driverId }).exec();
+  }
+
   /**
    * Récupérer une seule voiture par son ID.
    */
   async findOne(id: string): Promise<Car> {
     const car = await this.carModel.findById(id).exec();
+    if (!car) {
+      throw new NotFoundException(`Voiture avec l'ID "${id}" introuvable.`);
+    }
+    return car;
+  }
+
+  async getMyCar(id: string) {
+    const car = await this.carModel.findOne({ driverId: id });
     if (!car) {
       throw new NotFoundException(`Voiture avec l'ID "${id}" introuvable.`);
     }
@@ -89,6 +103,12 @@ export class CarService {
           "Une autre voiture utilise déjà cette plaque d'immatriculation.",
         );
       }
+    }
+
+    // Deleted Image car
+
+    if (updateCarDto.image) {
+      await this.CloudinaryService.deleteFile(existingCar.image.key);
     }
 
     // Mettre à jour la voiture

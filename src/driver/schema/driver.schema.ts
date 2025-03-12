@@ -109,6 +109,9 @@ export class Driver {
     ],
   })
   ratings: { rating: number; userId: string; createdAt: Date }[];
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile' })
+  profile: MongooseSchema.Types.ObjectId;
 }
 
 export const DriverSchema = SchemaFactory.createForClass(Driver);

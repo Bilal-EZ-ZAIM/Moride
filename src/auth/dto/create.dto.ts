@@ -7,7 +7,7 @@ import {
   IsEnum,
   Validate,
 } from 'class-validator';
-import { MatchPasswordsValidator } from 'src/validation/match-passwords.validator';
+import { MatchPasswordsValidator } from '../../validation/match-passwords.validator';
 
 export class CreateDto {
   @IsString({

@@ -11,7 +11,7 @@ export class CreateCarDto {
   @IsNotEmpty({ message: 'Le modèle de la voiture ne peut pas être vide' })
   model: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty({ message: "L'année de fabrication ne peut pas être vide" })
   year: number;
 
@@ -47,9 +47,9 @@ export class UpdateCarDto {
   @IsNotEmpty({ message: 'Le modèle de la voiture ne peut pas être vide' })
   model: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty({ message: "L'année de fabrication ne peut pas être vide" })
-  year: number;
+  year: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Le type de transmission ne peut pas être vide' })

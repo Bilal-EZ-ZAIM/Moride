@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DriverController } from './driver.controller';
 import { DriverService } from './driver.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Driver, DriverSchema } from './schema/driver.schema';
 
@@ -14,6 +14,6 @@ import { Driver, DriverSchema } from './schema/driver.schema';
   ],
   controllers: [DriverController],
   providers: [DriverService],
-  exports: [],
+  exports: [ DriverService],
 })
 export class DriverModule {}

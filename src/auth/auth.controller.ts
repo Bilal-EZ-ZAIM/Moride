@@ -11,21 +11,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ValidationPipe } from 'src/validation/validation.pipe';
 import { CreateDto } from './dto/create.dto';
 import { LoginDto } from './dto/login.dto';
 import { EmailDto } from './dto/email.dto';
 import { CodeDto } from './dto/code.dto';
 import { UpdatePasswordDto } from './dto/updatePassword';
-import { AuthGuardMoride } from 'src/guard/auth.guard';
+import { AuthGuardMoride } from '../guard/auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('/user/:id')
-  findAll(@Req() req: any, @Param('id', ValidationPipe) id: number): any {
+  @Get('/user')
+  findAll(@Req() req: any): any {
     return this.authService.getAll();
   }
 
@@ -58,7 +57,6 @@ export class AuthController {
   @Put('/restPassword')
   @UseGuards(AuthGuardMoride)
   async restPassword(@Req() req: any, @Body() body: UpdatePasswordDto) {
-    console.log('hello');
 
     const user = await this.authService.updatePassword(req.user, body);
     return {
@@ -75,6 +73,7 @@ export class AuthController {
 
     return token;
   }
+
   @Post('verify/code')
   @UseGuards(AuthGuardMoride)
   async verifyCode(@Request() req: any, @Body() codeDto: CodeDto) {

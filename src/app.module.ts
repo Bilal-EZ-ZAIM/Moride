@@ -8,6 +8,13 @@ import { DatabaseModule } from './Database/dataBase.module';
 import { ProfileModule } from './profile/profile.module';
 import { DriverModule } from './driver/driver.module';
 import { CarModule } from './car/car.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { BookingModule } from './booking/booking.module';
+import { WorkingHoursModule } from './workingHours/working.module';
+import { ChatGateway } from './chat/chat.gateway';
+import { ChatModule } from './chat/chat.module';
+import { ChatService } from './chat/chat.service';
+import { PricingModule } from './Pricing/pricing.module';
 
 @Module({
   imports: [
@@ -18,8 +25,13 @@ import { CarModule } from './car/car.module';
     ProfileModule,
     DriverModule,
     CarModule,
+    CloudinaryModule,
+    BookingModule,
+    WorkingHoursModule,
+    ChatModule,
+    PricingModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}

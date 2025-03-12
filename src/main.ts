@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://accounts.google.com/'],
-    methods: 'GET,POST,PUT,DELETE',
+    origin: ['http://localhost:5173'],
+    methods: 'GET,POST,PUT,DELETE,PATCH',
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true, // This should be true only if cookies or credentials are sent
   });
@@ -19,7 +20,10 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('api/v1');
-  await app.listen(process.env.PORT ?? 3000);
+  app.setGlobalPrefix('/api/v1');
+  app.useWebSocketAdapter(new IoAdapter(app));
+
+  await app.listen(3000); 
+  console.log(`🚀 Server running on http://localhost:3000`);
 }
 bootstrap();

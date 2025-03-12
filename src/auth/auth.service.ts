@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import * as bcryptjs from 'bcryptjs';
 import { CreateDto } from './dto/create.dto';
 import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { CodeDto } from './dto/code.dto';
 import { ConfigService } from '@nestjs/config';
 import { UpdatePasswordDto } from './dto/updatePassword';
@@ -19,6 +19,14 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  async updateIdProfile(id: string, idProfile: string): Promise<User> {
+    return this.userModel.findByIdAndUpdate(
+      id,
+      { profileId: idProfile },
+      { new: true },
+    );
+  }
+
   generateToken(payload: any, expiresIn: string = '90d'): string {
     return this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_SECRET'),
@@ -32,13 +40,10 @@ export class AuthService {
 
   async getAll() {
     const users = await this.userModel.findOne({
-      email: 'bilalzaim@gmail.com',
+      isOnline: true,
     });
     if (!users) {
-      throw new HttpException(
-        'User not fondjjjjjjjjjjjjjjjjjjjjjjjjjjj',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('User not fond', HttpStatus.NOT_FOUND);
     }
 
     return users;
@@ -117,7 +122,6 @@ export class AuthService {
   }
 
   async loginByGoogle(data: any) {
-    console.log(data);
 
     const utilisateurExistant = await this.userModel.findOne({
       email: data.email,
@@ -156,10 +160,8 @@ export class AuthService {
 
   async sendCodeByEmail(email: string) {
     const user = await this.userModel.findOne({ email: email });
-    console.log('Utilisateur trouvé :', user);
 
     if (!user) {
-      console.log('Utilisateur introuvable pour l’email :', email);
       throw new HttpException(
         {
           message:
@@ -170,7 +172,6 @@ export class AuthService {
     }
 
     const code = this.generateVerificationCode();
-    console.log('Code généré :', code);
 
     await this.mail.sendEmail({ to: email, code });
 
@@ -184,7 +185,6 @@ export class AuthService {
   }
 
   async updatePassword(user: any, data: UpdatePasswordDto) {
-    console.log(data);
 
     if (!user) {
       throw new HttpException('Email not correct', HttpStatus.NOT_FOUND);
@@ -235,5 +235,21 @@ export class AuthService {
     };
   }
 
- 
+  async updateUser(id: string, updateData: Partial<User>) {
+    try {
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        id,
+        updateData,
+        { new: true },
+      );
+
+      if (!updatedUser) {
+        return null;
+      }
+
+      return updatedUser;
+    } catch (error) {
+      throw new Error('Failed to update user');
+    }
+  }
 }

@@ -7,6 +7,14 @@ import {
 } from 'class-validator';
 
 export class CreateProfileDto {
+  @IsNotEmpty({ message: 'Le prénom est obligatoire.' })
+  @IsString({ message: 'Le prénom doit être une chaîne de caractères.' })
+  firstname: string;
+
+  @IsNotEmpty({ message: 'Le nom est obligatoire.' })
+  @IsString({ message: 'Le nom doit être une chaîne de caractères.' })
+  lastname: string;
+
   @IsNotEmpty({ message: "L'adresse est obligatoire." })
   @IsString({ message: "L'adresse doit être une chaîne de caractères." })
   address: string;

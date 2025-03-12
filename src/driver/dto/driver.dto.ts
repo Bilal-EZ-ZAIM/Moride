@@ -60,4 +60,11 @@ export class CreateDriverDto {
   }) 
   @IsOptional() 
   preferredLanguages: string[];
+
+
+  @IsString()
+  @IsNotEmpty({
+    message: 'Le profile ne peut pas être vide',
+  })
+  profile: string;
 }
