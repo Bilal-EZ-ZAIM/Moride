@@ -96,7 +96,6 @@ export class DriverService {
   }
 
   async getDriver(id: string) {
-    // Convert string to ObjectId
     const objectId = new mongoose.Types.ObjectId(id).toString();
 
     const driver = await this.driverModel.findOne({ userId: objectId });
