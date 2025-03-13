@@ -9,7 +9,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const databaseUrl = configService.get<string>('DATABASE_URL');
-        console.log('Connecting to MongoDB at URL:', databaseUrl); 
         return {
           uri: databaseUrl,
         };
