@@ -1,0 +1,47 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: ['develop']
+  workflow_run:
+    workflows: ['CI Pipeline']
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker image
+        run: sudo docker pull bilanox/moride:latest
+
+      - name: Ensure Old Docker Container is Stopped and Removed
+        run: |
+          sudo docker stop moride-container || true
+          sudo docker rm -f moride-container || true
+
+      - name: Check if port 3000 is in use
+        run: |
+          if sudo ss -tuln | grep -q ':3000'; then
+            echo "Port 3000 is in use. Stopping conflicting container or process."
+            sudo fuser -k 3000/tcp || true
+          fi
+
+      - name: Create .env file
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> .env
+          echo "CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }}" > .env
+          echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
+          echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
+          echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env
+          echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env
+          echo "SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}" >> .env
+          echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env
+          echo "NODE_ENV=production" >> .env
+
+      - name: Run Docker Container with .env
+        run: sudo docker run -d -p ${{ secrets.PORT }}:3000 --env-file .env --name moride-container bilanox/moride
