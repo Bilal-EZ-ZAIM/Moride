@@ -2,9 +2,11 @@ name: CD Pipeline
 
 on:
   push:
-    branches: ['main']
-  pull_request:
-    branches: ['main']
+    branches: ['develop']
+  workflow_run:
+    workflows: ['CI Pipeline']
+    types:
+      - completed
 
 jobs:
   build:
@@ -13,7 +15,10 @@ jobs:
     steps:
       - name: Clean up disk space
         run: |
+          # Eliminar imágenes Docker no utilizadas y contenedores detenidos
           sudo docker system prune -af --volumes
+
+          # Verificar espacio disponible después de la limpieza
           df -h /
 
       - name: Pull Docker image
