@@ -2,7 +2,6 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
   ValidationArguments,
-  Validate,
 } from 'class-validator';
 
 @ValidatorConstraint({ async: false })
@@ -13,6 +12,6 @@ export class MatchPasswordsValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    return 'Les mots de passe ne correspondent pas.'; 
+    return 'Les mots de passe ne correspondent pas.';
   }
 }

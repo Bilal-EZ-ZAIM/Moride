@@ -51,7 +51,6 @@ export class BookingService {
         booking,
       };
     } catch (error) {
-      console.error(error);
       if (error instanceof BadRequestException) {
         throw error;
       }

@@ -34,9 +34,7 @@ export class AuthService {
     });
   }
 
-  async restPas() {
-    return 'hello';
-  }
+
 
   async getAll() {
     const users = await this.userModel.findOne({

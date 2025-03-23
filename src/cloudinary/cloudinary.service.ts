@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryResponse } from './cloudinary-response';
 import * as streamifier from 'streamifier';
-import { diskStorage, memoryStorage } from 'multer'; // Import memoryStorage for Multer
 
 @Injectable()
 export class CloudinaryService {
@@ -17,7 +16,6 @@ export class CloudinaryService {
         { folder: 'profile_images' }, // Optional: specify a folder in Cloudinary
         (error, result) => {
           if (error) {
-            console.error('Cloudinary upload error:', error);
             return reject(error);
           }
           resolve(result);

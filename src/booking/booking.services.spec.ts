@@ -5,7 +5,6 @@ import { Booking } from './schema/booking.schema';
 import { DriverService } from '../driver/driver.service';
 import {
   BadRequestException,
-  InternalServerErrorException,
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
@@ -80,95 +79,44 @@ describe('BookingService', () => {
     expect(service).toBeDefined();
   });
 
-  // describe('create', () => {
-  //   it('should create a booking successfully', async () => {
-  //     const createBookingDto: CreateBookingDto = {
-  //       from: 'Paris',
-  //       to: 'Lyon',
-  //       date: '2025-03-06',
-  //       time: '14:00',
-  //       passengers: 2,
-  //       tripType: 'private',
-  //       priceFrom: '100',
-  //       priceTo: '150',
-  //       notes: 'Test notes',
-  //     };
-  //     const userId = 'mockUserId';
-  //     const profileId = 'mockProfileId';
+  describe('create', () => {
+    it('should throw BadRequestException when passengers count is invalid', async () => {
+      const userId = 'mockUserId';
+      const profileId = 'mockProfileId';
 
-  //     // محاكاة دالة save
-  //     const saveSpy = jest.fn().mockResolvedValue({
-  //       ...createBookingDto,
-  //       userId,
-  //       profileId,
-  //       _id: 'mockBookingId',
-  //     });
+      // Test with too many passengers
+      const invalidBookingDtoTooMany: CreateBookingDto = {
+        from: 'Paris',
+        to: 'Lyon',
+        date: '2025-03-06',
+        time: '14:00',
+        passengers: 5, // More than allowed
+        tripType: 'private',
+        priceFrom: '100',
+        priceTo: '150',
+      };
 
-  //     // محاكاة نموذج الحجز (bookingModel)
-  //     (bookingModel as any).mockImplementation(() => ({
-  //       ...createBookingDto,
-  //       userId,
-  //       profileId,
-  //       save: saveSpy,
-  //     }));
+      await expect(
+        service.create(invalidBookingDtoTooMany, userId, profileId),
+      ).rejects.toThrow(BadRequestException);
 
-  //     // استدعاء دالة الخدمة
-  //     const result = await service.create(createBookingDto, userId, profileId);
+      // Test with too few passengers
+      const invalidBookingDtoTooFew: CreateBookingDto = {
+        from: 'Paris',
+        to: 'Lyon',
+        date: '2025-03-06',
+        time: '14:00',
+        passengers: 0, // Less than allowed
+        tripType: 'private',
+        priceFrom: '100',
+        priceTo: '150',
+      };
 
-  //     // التحقق من النتيجة
-  //     expect(result).toHaveProperty(
-  //       'message',
-  //       'La réservation a été créée avec succès.',
-  //     );
-  //     expect(result).toHaveProperty('booking');
-  //     expect(saveSpy).toHaveBeenCalled();
-  //   });
-
-  //   it('should throw BadRequestException when passengers count is invalid', async () => {
-  //     const createBookingDto: CreateBookingDto = {
-  //       from: 'Paris',
-  //       to: 'Lyon',
-  //       date: '2025-03-06',
-  //       time: '14:00',
-  //       passengers: 5, // Invalid: more than 4
-  //       tripType: 'private',
-  //       priceFrom: '100',
-  //       priceTo: '150',
-  //     };
-  //     const userId = 'mockUserId';
-  //     const profileId = 'mockProfileId';
-
-  //     await expect(
-  //       service.create(createBookingDto, userId, profileId),
-  //     ).rejects.toThrow(BadRequestException);
-  //   });
-
-  //   it('should throw InternalServerErrorException when save fails', async () => {
-  //     const createBookingDto: CreateBookingDto = {
-  //       from: 'Paris',
-  //       to: 'Lyon',
-  //       date: '2025-03-06',
-  //       time: '14:00',
-  //       passengers: 2,
-  //       tripType: 'private',
-  //       priceFrom: '100',
-  //       priceTo: '150',
-  //     };
-  //     const userId = 'mockUserId';
-  //     const profileId = 'mockProfileId';
-
-  //     (bookingModel as any).constructor.mockImplementation(() => ({
-  //       ...createBookingDto,
-  //       userId,
-  //       profileId,
-  //       save: jest.fn().mockRejectedValue(new Error('Database error')),
-  //     }));
-
-  //     await expect(
-  //       service.create(createBookingDto, userId, profileId),
-  //     ).rejects.toThrow(InternalServerErrorException);
-  //   });
-  // });
+      await expect(
+        service.create(invalidBookingDtoTooFew, userId, profileId),
+      ).rejects.toThrow(BadRequestException);
+    });
+  });
 
   describe('findAll', () => {
     it('should return all bookings', async () => {

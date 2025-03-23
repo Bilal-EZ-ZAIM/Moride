@@ -42,12 +42,7 @@ export class DriverController {
     return await this.driverService.getDriverById(id);
   }
 
-  @Get('change/to/')
-  @UseGuards(AuthGuardMoride, RolesGuard)
-  @Roles('driver')
-  async checkeRole(@Request() req: any) {
-    return 'yes';
-  }
+
 
   @Post('/create')
   @UseGuards(AuthGuardMoride, RolesGuard)

@@ -57,7 +57,5 @@ export class AuthGuardMoride implements CanActivate {
     return true;
   }
 
-  private extractTokenFromCookie(request: Request): string | undefined {
-    return request.cookies['token'];
-  }
+  
 }

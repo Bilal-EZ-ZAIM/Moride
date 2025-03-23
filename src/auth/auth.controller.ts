@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
   Put,
   Req,
@@ -24,15 +23,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('/user')
-  findAll(@Req() req: any): any {
+  findAll(): any {
     return this.authService.getAll();
-  }
-
-  @Get('/res')
-  async restPas() {
-    return {
-      message: this.authService.restPas(),
-    };
   }
 
   @Post('/register')
@@ -57,7 +49,6 @@ export class AuthController {
   @Put('/restPassword')
   @UseGuards(AuthGuardMoride)
   async restPassword(@Req() req: any, @Body() body: UpdatePasswordDto) {
-
     const user = await this.authService.updatePassword(req.user, body);
     return {
       message: 'Update Password with Succes',
@@ -91,6 +82,7 @@ export class AuthController {
   async googleLogins() {
     return 'hell';
   }
+
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleLogin(@Req() req: any, @Res() res: any) {

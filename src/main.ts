@@ -2,12 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS for all origins (you can restrict this to specific origins if needed)
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:5173', 'https://moride.vercel.app/'],
+    methods: 'GET,POST,PUT,DELETE,PATCH',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true, // This should be true only if cookies or credentials are sent
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -23,5 +26,4 @@ async function bootstrap() {
   await app.listen(3000);
   console.log(`🚀 Server running on http://localhost:3000`);
 }
-
 bootstrap();

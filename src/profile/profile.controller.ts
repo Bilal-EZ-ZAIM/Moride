@@ -43,7 +43,6 @@ export class ProfileController {
     @Body() profileData: CreateProfileDto,
     @Request() req: any,
   ) {
-    console.log(profileData);
     const user = req.user;
 
     const profile = await this.profileService.createProfile(
@@ -101,7 +100,6 @@ export class ProfileController {
     }
 
     const url = await this.CloudinaryService.uploadFile(file);
-    console.log(url);
 
     const data = {
       url: url.url,

@@ -4,7 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Driver, Gender, DriverStatus } from './schema/driver.schema';
 import { CreateDriverDto } from './dto/driver.dto';
 import { UpdateDriverDto } from './dto/updqteDriver.dto';
-import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import mongoose from 'mongoose';
 
 describe('DriverService', () => {

@@ -61,10 +61,6 @@ export class ProfileService {
         userId,
       };
 
-      console.log('******************');
-      console.log(data);
-      console.log('******************');
-
       const newprofile: any = await this.profileModel.create(data);
       await this.userService.updateIdProfile(userId, newprofile?._id);
       return newprofile;
@@ -142,7 +138,6 @@ export class ProfileService {
     userId: string,
     imageProfile: { url: string; key: string },
   ) {
-    console.log(imageProfile);
 
     try {
       const existingProfile = await this.profileModel.findOne({ userId });
@@ -172,7 +167,6 @@ export class ProfileService {
       };
     } catch (error) {
       if (error && error.code === 11000) {
-        console.log('Duplicate key error code:', error.code);
 
         const duplicateField = Object.keys(error.errorResponse.keyValue)[0];
         const duplicateValue = error.errorResponse.keyValue[duplicateField];

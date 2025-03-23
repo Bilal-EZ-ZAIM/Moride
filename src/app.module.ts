@@ -13,7 +13,6 @@ import { BookingModule } from './booking/booking.module';
 import { WorkingHoursModule } from './workingHours/working.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
-import { ChatService } from './chat/chat.service';
 import { PricingModule } from './Pricing/pricing.module';
 
 @Module({

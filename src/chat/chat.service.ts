@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  InternalServerErrorException,
-  UnauthorizedException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { AuthService } from '../auth/auth.service';
@@ -136,8 +130,6 @@ export class ChatService {
         },
       })
       .sort({ createdAt: -1 });
-
-    console.log('Populated chats:', JSON.stringify(chats, null, 2));
 
     const uniqueContacts = new Map();
 
