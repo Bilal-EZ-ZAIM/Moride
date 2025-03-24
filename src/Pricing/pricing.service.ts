@@ -58,7 +58,6 @@ export class PricingService {
         "La tarification demandée n'a pas été trouvée ou vous n'avez pas les droits pour y accéder",
       );
     }
-    console.log(pricing);
     return pricing;
   }
   // Mettre à jour une tarification (Update)

@@ -51,7 +51,7 @@ export class AuthGuardMoride implements CanActivate {
 
       request['user'] = user;
     } catch (error) {
-      throw new UnauthorizedException(error.message || 'Unauthorized');
+      throw new UnauthorizedException('Unauthorized');
     }
 
     return true;

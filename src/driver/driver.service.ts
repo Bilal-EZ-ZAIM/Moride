@@ -140,7 +140,7 @@ export class DriverService {
     // Convert string to ObjectId
     const objectId = new mongoose.Types.ObjectId(id).toString();
 
-    const driver = (await this.driverModel.findById(id)).populate('profile');
+    const driver = await this.driverModel.findById(id).populate('profile');
 
     if (!driver) {
       throw new HttpException(
